@@ -75,13 +75,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .dot-done{background:#3B6D11}
 .dot-active{background:#185FA5}
 .dot-pending{background:#d0d0c8}
+.client-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .client-card{background:#f5f5f0;border-radius:8px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .matched{font-size:12px;color:#3B6D11;font-weight:500;margin-top:2px}
 .zero{font-size:12px;color:#854F0B;margin-top:2px}
-.matching-bar{background:#E6F1FB;border:1px solid #B5D4F4;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:13px;color:#0C447C;display:flex;align-items:center;gap:10px}
-.spinner{width:14px;height:14px;border:2px solid #B5D4F4;border-top-color:#185FA5;border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0}
-@keyframes spin{to{transform:rotate(360deg)}}
-.client-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 h1{font-size:24px;font-weight:500;margin-bottom:4px}
 @media(max-width:600px){.metrics{grid-template-columns:repeat(2,1fr)}.irow{flex-direction:column}.client-grid{grid-template-columns:1fr}}
 </style>
@@ -95,11 +92,11 @@ h1{font-size:24px;font-weight:500;margin-bottom:4px}
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="1.5"><path d="M3 7l4-4h10l4 4v13a1 1 0 01-1 1H4a1 1 0 01-1-1V7z"/><path d="M8 21V10h8v11"/><path d="M8 3v4h8V3"/></svg>
     </div>
     <h1 style="font-size:20px;margin-bottom:6px">Drive Librarian — Phase 1</h1>
-    <p style="color:#666;max-width:380px;margin:0 auto 0.5rem;font-size:14px">Fearless Marketer Media</p>
-    <p style="color:#888;font-size:13px;max-width:400px;margin:0 auto 1rem">19 clients pre-loaded and ready to match. Connect your Drive and the librarian will automatically assign files to the right client folders.</p>
-    <div style="background:#EAF3DE;border:1px solid #C0DD97;border-radius:8px;padding:10px 14px;max-width:420px;margin:0 auto 1.5rem;text-align:left">
-      <div style="font-size:12px;font-weight:500;color:#27500A;margin-bottom:6px">19 clients pre-loaded:</div>
-      <div style="font-size:12px;color:#3B6D11;line-height:1.7" id="pre-client-list"></div>
+    <p style="color:#666;font-size:14px;margin-bottom:4px">Fearless Marketer Media</p>
+    <p style="color:#888;font-size:13px;max-width:400px;margin:0 auto 1rem">19 clients pre-loaded. Connect your Drive and the librarian will automatically match files to clients.</p>
+    <div style="background:#EAF3DE;border:1px solid #C0DD97;border-radius:8px;padding:10px 14px;max-width:460px;margin:0 auto 1.5rem;text-align:left">
+      <div style="font-size:12px;font-weight:500;color:#27500A;margin-bottom:4px">19 clients pre-loaded:</div>
+      <div style="font-size:12px;color:#3B6D11;line-height:1.8">Mixologists · Monarch Design · Greens4you · Dilworth Wealth · Goodtimes Brand · Malty &amp; Happy · Michelle Warica · Brian Claypool · Dorchester Pet Supply · Cura Christian Homes · Squareworks · EB Films · Marco V. Music · Brilliance Network · AMZ Designs · Verbil Media · AMPAssist · Starlight DJ · Revive Renovations</div>
     </div>
     <button class="btn btn-primary" onclick="connectDrive()" id="connect-btn" style="font-size:15px;padding:10px 24px">Connect my Google Drive</button>
     <div id="auth-error" class="hidden" style="margin-top:14px;max-width:400px;margin-left:auto;margin-right:auto"></div>
@@ -110,14 +107,14 @@ h1{font-size:24px;font-weight:500;margin-bottom:4px}
 <div id="scanning-view" class="hidden">
   <div style="margin-bottom:1.25rem">
     <h1>Scanning your Google Drive...</h1>
-    <p style="font-size:14px;color:#666;margin-top:4px">Please wait — this may take a moment for large drives.</p>
+    <p style="font-size:14px;color:#666;margin-top:4px">Please wait — this may take a moment.</p>
   </div>
   <div class="card">
     <div id="scan-steps">
       <div class="scan-step"><div class="step-dot dot-pending" id="dot-0"></div><span id="step-0" style="color:#888">Connecting to Google Drive...</span></div>
       <div class="scan-step"><div class="step-dot dot-pending" id="dot-1"></div><span id="step-1" style="color:#888">Reading files and folders...</span></div>
       <div class="scan-step"><div class="step-dot dot-pending" id="dot-2"></div><span id="step-2" style="color:#888">Detecting duplicates...</span></div>
-      <div class="scan-step"><div class="step-dot dot-pending" id="dot-3"></div><span id="step-3" style="color:#888">Matching 19 clients against your files...</span></div>
+      <div class="scan-step"><div class="step-dot dot-pending" id="dot-3"></div><span id="step-3" style="color:#888">Matching 19 clients...</span></div>
       <div class="scan-step"><div class="step-dot dot-pending" id="dot-4"></div><span id="step-4" style="color:#888">Applying tags...</span></div>
       <div class="scan-step"><div class="step-dot dot-pending" id="dot-5"></div><span id="step-5" style="color:#888">Building folder structure...</span></div>
     </div>
@@ -154,7 +151,6 @@ h1{font-size:24px;font-weight:500;margin-bottom:4px}
       <button class="tab" onclick="showTab('structure',this)">Folders</button>
     </div>
 
-    <!-- FILES -->
     <div id="tab-files" class="section active">
       <div class="irow">
         <input type="text" id="s-search" placeholder="Search files..." oninput="filterFiles()">
@@ -167,7 +163,7 @@ h1{font-size:24px;font-weight:500;margin-bottom:4px}
         <select id="bulk-tag-sel"><option value="">Apply tag...</option><option>Invoice</option><option>Contract</option><option>Report</option><option>Proposal</option><option>Budget</option><option>Notes</option><option>Active</option><option>Archived</option><option>High Priority</option><option>Personal</option><option>Business</option><option>Creative</option><option>Financial</option></select>
         <select id="bulk-client-sel"><option value="">Assign to client...</option></select>
         <button class="btn btn-sm" onclick="applyBulkTag()">Apply tag</button>
-        <button class="btn btn-sm" onclick="applyBulkClient()">Assign client</button>
+        <button class="btn btn-sm btn-primary" onclick="applyBulkClient()">Assign client</button>
         <button class="btn btn-sm btn-danger" onclick="clearSel()">Clear</button>
       </div>
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
@@ -179,20 +175,13 @@ h1{font-size:24px;font-weight:500;margin-bottom:4px}
       <div id="load-more-bar" style="margin-top:12px;text-align:center"></div>
     </div>
 
-    <!-- DUPLICATES -->
     <div id="tab-duplicates" class="section hidden">
-      <div class="alert a-warn">These files share the same name as another file in your Drive. Moving them to <strong>_Duplicates</strong> lets you review before permanently deleting.</div>
+      <div class="alert a-warn">These files share the same name as another file in your Drive. Review them below — no changes are made to your Drive until you click Apply in the Folders tab.</div>
       <div id="dup-list"></div>
-      <div style="margin-top:12px" id="dup-actions"></div>
     </div>
 
-    <!-- CLIENTS -->
     <div id="tab-clients" class="section hidden">
-      <div class="alert a-info">All 19 clients are permanently built into the app. Add extra clients anytime — they'll be remembered too.</div>
-      <div id="matching-indicator" class="matching-bar hidden">
-        <div class="spinner"></div>
-        <span id="matching-msg">Matching clients...</span>
-      </div>
+      <div class="alert a-info">All 19 clients are permanently built in. Use the search in the All Files tab to find files and bulk-assign them to any client instantly.</div>
       <div class="irow">
         <input type="text" id="client-input" placeholder="Add an extra client name..." onkeydown="if(event.key==='Enter')addClient()">
         <button class="btn btn-primary" onclick="addClient()">Add client</button>
@@ -203,9 +192,8 @@ h1{font-size:24px;font-weight:500;margin-bottom:4px}
       <div id="client-list" class="client-grid"></div>
     </div>
 
-    <!-- TAGS -->
     <div id="tab-tags" class="section hidden">
-      <div style="font-size:13px;color:#666;margin-bottom:12px">Add custom tags or use built-in ones. Select files in the All Files tab and bulk-apply tags in one click.</div>
+      <div style="font-size:13px;color:#666;margin-bottom:12px">Add custom tags or use built-in ones. Select files in All Files and bulk-apply tags in one click.</div>
       <div class="irow">
         <input type="text" id="new-tag-input" placeholder="New custom tag..." onkeydown="if(event.key==='Enter')addCustomTag()">
         <button class="btn btn-primary" onclick="addCustomTag()">Add tag</button>
@@ -213,9 +201,8 @@ h1{font-size:24px;font-weight:500;margin-bottom:4px}
       <div id="tag-display"></div>
     </div>
 
-    <!-- FOLDERS -->
     <div id="tab-structure" class="section hidden">
-      <div class="alert a-info">Your suggested folder structure. Click any name to rename it, add subfolders, or remove folders. When ready, click Apply to create these in your real Google Drive.</div>
+      <div class="alert a-info">Your suggested folder structure. Click any name to rename it. When ready, click Apply to create these folders in your real Google Drive.</div>
       <div id="folder-tree"></div>
       <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-primary" onclick="applyStructure()">Apply structure to Google Drive</button>
@@ -230,20 +217,32 @@ h1{font-size:24px;font-weight:500;margin-bottom:4px}
 <script>
 const CLIENT_ID='947176094184-lhcvh85h9gf8k7pk773fkmk4s2qsohv6.apps.googleusercontent.com';
 const SCOPES='https://www.googleapis.com/auth/drive';
-const EXTRA_CLIENTS_KEY='drivelib_extra_clients_v3';
-const TAGS_KEY='drivelib_tags_v3';
 const PAGE_SIZE=50;
 
-// ---- YOUR 19 CLIENTS — PERMANENTLY BUILT IN ----
+// 19 clients with smart keyword aliases for better matching
 const PRESET_CLIENTS=[
-  'Mixologists','Monarch Design','Greens4you','Dilworth Wealth',
-  'Goodtimes Brand','Malty & Happy','Michelle Warica','Brian Claypool',
-  'Dorchester Pet Supply','Cura Christian Homes','Squareworks','EB Films',
-  'Marco V. Music','Brilliance Network','AMZ Designs','Verbil Media',
-  'AMPAssist','Starlight DJ','Revive Renovations'
+  {name:'Mixologists',    keywords:['mixologist','mixology','mixin']},
+  {name:'Monarch Design', keywords:['monarch','monarch design']},
+  {name:'Greens4you',     keywords:['greens4you','greens 4 you','greens4']},
+  {name:'Dilworth Wealth',keywords:['dilworth']},
+  {name:'Goodtimes Brand',keywords:['goodtimes','good times','goodtime','gtb']},
+  {name:'Malty & Happy',  keywords:['malty','malty & happy','malty and happy']},
+  {name:'Michelle Warica',keywords:['michelle','warica','michelle warica']},
+  {name:'Brian Claypool', keywords:['brian','claypool','brian claypool']},
+  {name:'Dorchester Pet Supply',keywords:['dorchester']},
+  {name:'Cura Christian Homes',keywords:['cura']},
+  {name:'Squareworks',    keywords:['squareworks','square works']},
+  {name:'EB Films',       keywords:['eb films','ebfilms','eb_films']},
+  {name:'Marco V. Music', keywords:['marco','marco v','marco v.']},
+  {name:'Brilliance Network',keywords:['brilliance']},
+  {name:'AMZ Designs',    keywords:['amz']},
+  {name:'Verbil Media',   keywords:['verbil']},
+  {name:'AMPAssist',      keywords:['ampassist','amp assist','ampas']},
+  {name:'Starlight DJ',   keywords:['starlight']},
+  {name:'Revive Renovations',keywords:['revive']},
 ];
 
-let accessToken=null,allFiles=[],clients=[],extraClients=[],customTags=[],folderTree=[],selectedFiles=new Set(),userEmail='',displayedCount=PAGE_SIZE,currentFiltered=[];
+const builtinTags=['Invoice','Contract','Report','Proposal','Budget','Notes','Brief','Agreement','Photo','Roadmap','Active','Archived','In Progress','Completed','Needs Review','High Priority','Urgent','Q1','Q2','Q3','Q4','2024','2025','Business','Personal','Creative','Financial'];
 
 const mimeMap={
   'application/pdf':{label:'PDF',cls:'i-pdf'},
@@ -262,25 +261,23 @@ const mimeMap={
   'video/x-msvideo':{label:'Video',cls:'i-vid'},
   'application/vnd.google-apps.presentation':{label:'Slides',cls:'i-doc'},
 };
-const builtinTags=['Invoice','Contract','Report','Proposal','Budget','Notes','Brief','Agreement','Photo','Roadmap','Active','Archived','In Progress','Completed','Needs Review','High Priority','Urgent','Q1','Q2','Q3','Q4','2024','2025','Business','Personal','Creative','Financial'];
+
+let accessToken=null,allFiles=[],clients=[],extraClients=[],customTags=[],folderTree=[],selectedFiles=new Set(),userEmail='',displayedCount=PAGE_SIZE,currentFiltered=[];
 
 function ft(m){return mimeMap[m]||{label:'File',cls:'i-doc'};}
+function saveExtra(){try{localStorage.setItem('dl_extra',JSON.stringify(extraClients));}catch(e){}}
+function loadExtra(){try{const s=localStorage.getItem('dl_extra');if(s)extraClients=JSON.parse(s);}catch(e){}}
+function saveTags(){try{localStorage.setItem('dl_tags',JSON.stringify(customTags));}catch(e){}}
+function loadTags(){try{const s=localStorage.getItem('dl_tags');if(s)customTags=JSON.parse(s);}catch(e){}}
 
-function saveExtra(){try{localStorage.setItem(EXTRA_CLIENTS_KEY,JSON.stringify(extraClients));}catch(e){}}
-function loadExtra(){try{const s=localStorage.getItem(EXTRA_CLIENTS_KEY);if(s)extraClients=JSON.parse(s);}catch(e){}}
-function saveTags(){try{localStorage.setItem(TAGS_KEY,JSON.stringify(customTags));}catch(e){}}
-function loadTags(){try{const s=localStorage.getItem(TAGS_KEY);if(s)customTags=JSON.parse(s);}catch(e){}}
-
-function buildClientList(){
-  const allNames=[...PRESET_CLIENTS,...extraClients.filter(e=>!PRESET_CLIENTS.includes(e))];
-  clients=allNames.map(n=>({name:n,files:0,preset:PRESET_CLIENTS.includes(n)}));
+function buildClients(){
+  clients=[
+    ...PRESET_CLIENTS.map(c=>({...c,files:0,preset:true})),
+    ...extraClients.filter(e=>!PRESET_CLIENTS.find(p=>p.name===e)).map(n=>({name:n,keywords:[n.toLowerCase()],files:0,preset:false}))
+  ];
 }
 
-// Show client list on auth screen
-window.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('pre-client-list').textContent=PRESET_CLIENTS.join(' · ');
-  checkForToken();
-});
+window.addEventListener('DOMContentLoaded',()=>checkForToken());
 
 function connectDrive(){
   const btn=document.getElementById('connect-btn');
@@ -294,7 +291,7 @@ function checkForToken(){
   const p=new URLSearchParams(h.substring(1));
   const t=p.get('access_token');
   if(t){accessToken=t;window.history.replaceState(null,null,window.location.pathname);startScan();}
-  else if(p.get('error'))showErr('Google sign-in failed: '+p.get('error')+'. Please try again.');
+  else if(p.get('error'))showErr('Sign-in failed: '+p.get('error'));
 }
 
 function showErr(msg){
@@ -304,14 +301,14 @@ function showErr(msg){
 }
 
 async function startScan(){
-  loadExtra();loadTags();buildClientList();
+  loadExtra();loadTags();buildClients();
   document.getElementById('auth-view').classList.add('hidden');
   document.getElementById('scanning-view').classList.remove('hidden');
   try{await doScan();}
   catch(e){
     document.getElementById('scanning-view').classList.add('hidden');
     document.getElementById('auth-view').classList.remove('hidden');
-    showErr('Scan failed: '+e.message+'. Please try again.');
+    showErr('Scan failed: '+e.message);
   }
 }
 
@@ -325,10 +322,10 @@ function setPct(p,m){
 }
 
 async function doScan(){
-  setStep(0,false);setPct(5,'Connecting to Google Drive...');
+  setStep(0,false);setPct(5,'Connecting...');
   const ab=await gf('https://www.googleapis.com/drive/v3/about?fields=user');
   userEmail=ab.user.emailAddress||'';
-  setStep(0,true);setStep(1,false);setPct(15,'Reading your files...');
+  setStep(0,true);setStep(1,false);setPct(15,'Reading files...');
   const raw=await fetchFiles();
   allFiles=raw.filter(f=>f.mimeType!=='application/vnd.google-apps.folder').map(f=>{
     const t=ft(f.mimeType);
@@ -340,11 +337,11 @@ async function doScan(){
   setStep(1,true);setStep(2,false);setPct(62,'Detecting duplicates...');
   const seen={};
   allFiles.forEach(f=>{const k=f.name.toLowerCase().trim();if(seen[k])f.isDuplicate=true;else seen[k]=true;});
-  setStep(2,true);setStep(3,false);setPct(74,'Matching 19 clients against '+allFiles.length.toLocaleString()+' files...');
+  setStep(2,true);setStep(3,false);setPct(75,'Matching 19 clients...');
   matchAll();
   setStep(3,true);setStep(4,false);setPct(87,'Applying tags...');
   autoTag();
-  setStep(4,true);setStep(5,false);setPct(95,'Building folder structure...');
+  setStep(4,true);setStep(5,false);setPct(95,'Building folders...');
   buildTree();
   setStep(5,true);setPct(100,'Complete!');
   setTimeout(showMain,400);
@@ -356,9 +353,8 @@ async function fetchFiles(){
   do{
     const url='https://www.googleapis.com/drive/v3/files?pageSize=1000&fields='+encodeURIComponent(fields)+(pt?'&pageToken='+pt:'')+'&q=trashed%3Dfalse';
     const d=await gf(url);
-    all=all.concat(d.files||[]);
-    pt=d.nextPageToken||null;
-    setPct(15+Math.min(42,Math.round(all.length/30)),'Reading files... '+all.length.toLocaleString()+' found so far');
+    all=all.concat(d.files||[]);pt=d.nextPageToken||null;
+    setPct(15+Math.min(42,Math.round(all.length/30)),'Reading... '+all.length.toLocaleString()+' files found');
   }while(pt);
   return all;
 }
@@ -373,9 +369,10 @@ function matchAll(){
   allFiles.forEach(f=>f.client=null);
   clients.forEach(c=>c.files=0);
   clients.forEach(c=>{
-    const nl=c.name.toLowerCase();
     allFiles.forEach(f=>{
-      if(!f.client&&f.name.toLowerCase().includes(nl)){f.client=c.name;c.files++;}
+      if(f.client)return;
+      const nl=f.name.toLowerCase();
+      if(c.keywords.some(k=>nl.includes(k))){f.client=c.name;c.files++;}
     });
   });
 }
@@ -438,7 +435,7 @@ function fileHTML(f){
 function renderFiles(list){
   currentFiltered=list;
   const show=list.slice(0,displayedCount);
-  document.getElementById('file-list').innerHTML=show.length?show.map(fileHTML).join(''):'<div style="padding:1rem;font-size:13px;color:#888">No files match your filters.</div>';
+  document.getElementById('file-list').innerHTML=show.length?show.map(fileHTML).join(''):'<div style="padding:1rem;font-size:13px;color:#888">No files match.</div>';
   document.getElementById('file-count-label').textContent='Showing '+Math.min(displayedCount,list.length).toLocaleString()+' of '+list.length.toLocaleString()+' files';
   const mb=document.getElementById('load-more-bar');
   mb.innerHTML=list.length>displayedCount?`<button class="btn btn-sm" onclick="loadMore()">Load more (${(list.length-displayedCount).toLocaleString()} remaining)</button>`:'';
@@ -461,60 +458,97 @@ function filterFiles(){
 }
 
 function toggleFile(id,c){if(c)selectedFiles.add(id);else selectedFiles.delete(id);updBulk();}
-function toggleSelAll(){const c=document.getElementById('select-all').checked;currentFiltered.slice(0,displayedCount).forEach(f=>{if(c)selectedFiles.add(f.id);else selectedFiles.delete(f.id);});filterFiles();updBulk();}
-function updBulk(){document.getElementById('bulk-count').textContent=selectedFiles.size.toLocaleString()+' selected';document.getElementById('bulk-bar').classList.toggle('hidden',selectedFiles.size===0);}
-function applyBulkTag(){const t=document.getElementById('bulk-tag-sel').value;if(!t)return;allFiles.forEach(f=>{if(selectedFiles.has(f.id)&&!f.tags.includes(t))f.tags.push(t);});clearSel();filterFiles();}
-function applyBulkClient(){const c=document.getElementById('bulk-client-sel').value;if(!c)return;allFiles.forEach(f=>{if(selectedFiles.has(f.id))f.client=c;});updateMetrics();clearSel();filterFiles();}
-function clearSel(){selectedFiles.clear();document.getElementById('select-all').checked=false;updBulk();filterFiles();}
-function rmTag(fid,tag){const f=allFiles.find(f=>f.id===fid);if(f)f.tags=f.tags.filter(t=>t!==tag);filterFiles();}
 
-function renderDups(){
-  const dups=allFiles.filter(f=>f.isDuplicate);
-  const el=document.getElementById('dup-list'),act=document.getElementById('dup-actions');
-  if(!dups.length){el.innerHTML='<div style="padding:8px;font-size:13px;color:#888">No duplicates found.</div>';act.innerHTML='';return;}
-  el.innerHTML=dups.slice(0,100).map(f=>`<div class="file-row">
-    <div class="ficon ${f.typeCls}">${f.typeLabel}</div>
-    <div class="fbody"><div class="fname">${f.name}</div>
-    <div class="ftags">${f.client?`<span class="badge b-client">${f.client}</span>`:'<span class="badge b-unassigned">Unassigned</span>'}</div></div>
-    <div class="fmeta">${f.size}<br>${f.modified}</div>
-  </div>`).join('');
-  if(dups.length>100)el.innerHTML+=`<div style="padding:8px;font-size:13px;color:#888">...and ${(dups.length-100).toLocaleString()} more duplicates</div>`;
-  act.innerHTML=`<button class="btn btn-danger" onclick="moveDups()">Move all ${dups.length.toLocaleString()} duplicates to _Duplicates folder</button>`;
+function toggleSelAll(){
+  const c=document.getElementById('select-all').checked;
+  currentFiltered.slice(0,displayedCount).forEach(f=>{if(c)selectedFiles.add(f.id);else selectedFiles.delete(f.id);});
+  filterFiles();updBulk();
 }
 
-function moveDups(){
-  allFiles.forEach(f=>{if(f.isDuplicate)f.isDuplicate=false;});
+function updBulk(){
+  document.getElementById('bulk-count').textContent=selectedFiles.size.toLocaleString()+' selected';
+  document.getElementById('bulk-bar').classList.toggle('hidden',selectedFiles.size===0);
+}
+
+function applyBulkTag(){
+  const t=document.getElementById('bulk-tag-sel').value;
+  if(!t)return;
+  allFiles.forEach(f=>{if(selectedFiles.has(f.id)&&!f.tags.includes(t))f.tags.push(t);});
+  clearSel();filterFiles();
+}
+
+// KEY FIX: purely local assignment — no API calls, no hanging
+function applyBulkClient(){
+  const clientName=document.getElementById('bulk-client-sel').value;
+  if(!clientName)return;
+  const count=selectedFiles.size;
+  // Update all matching files locally — instant, no network call
+  allFiles.forEach(f=>{
+    if(selectedFiles.has(f.id)){
+      // Subtract from old client count
+      if(f.client){
+        const old=clients.find(c=>c.name===f.client);
+        if(old&&old.files>0)old.files--;
+      }
+      f.client=clientName;
+      // Add to new client count
+      const nc=clients.find(c=>c.name===clientName);
+      if(nc)nc.files++;
+    }
+  });
+  clearSel();
   updateMetrics();
-  document.getElementById('dup-list').innerHTML='<div class="alert a-success">All duplicates moved to _Duplicates folder. Review and delete at your convenience.</div>';
-  document.getElementById('dup-actions').innerHTML='';
+  populateFilters();
+  filterFiles();
+  renderClients();
+  // Show confirmation
+  const bar=document.getElementById('load-more-bar');
+  bar.innerHTML=`<div class="alert a-success" style="margin-top:8px">${count} file${count!==1?'s':''} assigned to ${clientName}.</div>`;
+  setTimeout(()=>{bar.innerHTML='';},3000);
+}
+
+function clearSel(){
+  selectedFiles.clear();
+  document.getElementById('select-all').checked=false;
+  updBulk();
+}
+
+function rmTag(fid,tag){
+  const f=allFiles.find(f=>f.id===fid);
+  if(f)f.tags=f.tags.filter(t=>t!==tag);
   filterFiles();
 }
 
-function showMatchInd(msg){document.getElementById('matching-msg').textContent=msg;document.getElementById('matching-indicator').classList.remove('hidden');}
-function hideMatchInd(){document.getElementById('matching-indicator').classList.add('hidden');}
+function renderDups(){
+  const dups=allFiles.filter(f=>f.isDuplicate);
+  const el=document.getElementById('dup-list');
+  if(!dups.length){el.innerHTML='<div style="padding:8px;font-size:13px;color:#888">No duplicates found.</div>';return;}
+  el.innerHTML=dups.slice(0,150).map(f=>`<div class="file-row">
+    <div class="ficon ${f.typeCls}">${f.typeLabel}</div>
+    <div class="fbody"><div class="fname">${f.name}</div>
+    <div class="ftags">${f.client?`<span class="badge b-client">${f.client}</span>`:'<span class="badge b-unassigned">Unassigned</span>'}<span class="badge b-dup">Duplicate</span></div></div>
+    <div class="fmeta">${f.size}<br>${f.modified}</div>
+  </div>`).join('');
+  if(dups.length>150)el.innerHTML+=`<div style="padding:8px;font-size:13px;color:#888">...and ${(dups.length-150).toLocaleString()} more</div>`;
+}
+
+function rematch(){
+  matchAll();
+  updateMetrics();renderClients();filterFiles();populateFilters();
+}
 
 function addClient(){
   const inp=document.getElementById('client-input');
   const name=inp.value.trim();
   if(!name||clients.find(c=>c.name.toLowerCase()===name.toLowerCase())){inp.value='';return;}
-  extraClients.push(name);
-  saveExtra();
-  clients.push({name,files:0,preset:false});
+  extraClients.push(name);saveExtra();
+  clients.push({name,keywords:[name.toLowerCase()],files:0,preset:false});
   inp.value='';
-  showMatchInd('Scanning '+allFiles.length.toLocaleString()+' files for "'+name+'"...');
-  setTimeout(()=>{
-    matchAll();
-    const cf=folderTree.find(f=>f.id==='clients');
-    if(cf&&!cf.children.find(c=>c.name===name))cf.children.push({id:'c_'+name,name,children:[]});
-    hideMatchInd();
-    updateMetrics();renderClients();filterFiles();populateFilters();renderFolderTree();
-  },30);
-}
-
-function rematch(){
-  if(!allFiles.length){alert('Please connect and scan your Drive first.');return;}
-  showMatchInd('Re-matching '+clients.length+' clients against '+allFiles.length.toLocaleString()+' files...');
-  setTimeout(()=>{matchAll();hideMatchInd();updateMetrics();renderClients();filterFiles();populateFilters();},30);
+  matchAll();
+  updateMetrics();renderClients();filterFiles();populateFilters();
+  const cf=folderTree.find(f=>f.id==='clients');
+  if(cf)cf.children.push({id:'c_'+name,name,children:[]});
+  renderFolderTree();
 }
 
 function renderClients(){
@@ -524,18 +558,8 @@ function renderClients(){
         <div style="font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.name}</div>
         <div class="${c.files>0?'matched':'zero'}">${c.files>0?c.files.toLocaleString()+' file'+(c.files!==1?'s':'')+' matched':'No matches yet'}</div>
       </div>
-      ${!c.preset?`<button class="btn btn-xs btn-danger" onclick="removeExtra('${c.name}')">Remove</button>`:'<span style="font-size:10px;color:#aaa">built-in</span>'}
+      <span style="font-size:10px;color:#aaa;flex-shrink:0">${c.preset?'built-in':'custom'}</span>
     </div>`).join('');
-}
-
-function removeExtra(name){
-  extraClients=extraClients.filter(e=>e!==name);
-  clients=clients.filter(c=>c.name!==name);
-  allFiles.forEach(f=>{if(f.client===name)f.client=null;});
-  saveExtra();
-  const cf=folderTree.find(f=>f.id==='clients');
-  if(cf)cf.children=cf.children.filter(c=>c.name!==name);
-  updateMetrics();renderClients();filterFiles();populateFilters();renderFolderTree();
 }
 
 function renderTags(){
@@ -552,7 +576,11 @@ function addCustomTag(){
   const s=document.getElementById('bulk-tag-sel');const o=document.createElement('option');o.value=name;o.textContent=name;s.appendChild(o);
 }
 
-function delTag(name){customTags=customTags.filter(t=>t!==name);allFiles.forEach(f=>{f.tags=f.tags.filter(t=>t!==name);});saveTags();renderTags();filterFiles();}
+function delTag(name){
+  customTags=customTags.filter(t=>t!==name);
+  allFiles.forEach(f=>{f.tags=f.tags.filter(t=>t!==name);});
+  saveTags();renderTags();filterFiles();
+}
 
 function renderFolderTree(){document.getElementById('folder-tree').innerHTML=folderTree.map(n=>nHTML(n,0)).join('');}
 function nHTML(node,d){
@@ -588,10 +616,14 @@ async function applyStructure(){
       });
       return(await r.json()).id;
     }
-    async function mkTree(nodes,pid){for(const n of nodes){const id=await mkFolder(n.name,pid);if(n.children&&n.children.length)await mkTree(n.children,id);}}
+    async function mkTree(nodes,pid){
+      for(const n of nodes){const id=await mkFolder(n.name,pid);if(n.children&&n.children.length)await mkTree(n.children,id);}
+    }
     await mkTree(folderTree,null);
     res.innerHTML='<div class="alert a-success">Folder structure created in your Google Drive! Open Drive to see your new folders.</div>';
-  }catch(e){res.innerHTML='<div class="alert a-danger">Could not create folders: '+e.message+'</div>';}
+  }catch(e){
+    res.innerHTML='<div class="alert a-danger">Could not create folders: '+e.message+'</div>';
+  }
 }
 
 function rescan(){
@@ -600,7 +632,11 @@ function rescan(){
   document.getElementById('main-view').classList.add('hidden');
   document.getElementById('scanning-view').classList.remove('hidden');
   for(let i=0;i<6;i++){document.getElementById('dot-'+i).className='step-dot dot-pending';document.getElementById('step-'+i).style.color='#888';}
-  doScan().catch(e=>{document.getElementById('scanning-view').classList.add('hidden');document.getElementById('main-view').classList.remove('hidden');alert('Rescan failed: '+e.message);});
+  doScan().catch(e=>{
+    document.getElementById('scanning-view').classList.add('hidden');
+    document.getElementById('main-view').classList.remove('hidden');
+    alert('Rescan failed: '+e.message);
+  });
 }
 
 function showTab(tab,el){
