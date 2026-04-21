@@ -542,4 +542,74 @@ function renderTags(){
   let h='';
   if(customTags.length)h+=`<div class="tag-section"><div class="tag-section-label">Custom tags</div><div class="tag-grid">${customTags.map(t=>`<span class="tag-pill">${t}<span style="cursor:pointer;font-size:10px;opacity:0.6;margin-left:4px" onclick="delTag('${t}')">x</span></span>`).join('')}</div></div>`;
   h+=`<div class="tag-section"><div class="tag-section-label">Built-in tags</div><div class="tag-grid">${builtinTags.map(t=>`<span class="tag-pill"><span class="badge b-type" style="margin:0">${t}</span></span>`).join('')}</div></div>`;
-  document.getElementById('tag-display')
+  document.getElementById('tag-display').innerHTML=h;
+}
+
+function addCustomTag(){
+  const inp=document.getElementById('new-tag-input');const name=inp.value.trim();
+  if(!name||customTags.includes(name)){inp.value='';return;}
+  customTags.push(name);inp.value='';saveTags();renderTags();
+  const s=document.getElementById('bulk-tag-sel');const o=document.createElement('option');o.value=name;o.textContent=name;s.appendChild(o);
+}
+
+function delTag(name){customTags=customTags.filter(t=>t!==name);allFiles.forEach(f=>{f.tags=f.tags.filter(t=>t!==name);});saveTags();renderTags();filterFiles();}
+
+function renderFolderTree(){document.getElementById('folder-tree').innerHTML=folderTree.map(n=>nHTML(n,0)).join('');}
+function nHTML(node,d){
+  const ch=(node.children||[]).map(c=>nHTML(c,d+1)).join('');
+  return`<div class="folder-node" style="padding-left:${d*16}px">
+    <div class="fnh">
+      <span style="font-size:15px">📁</span>
+      <input class="ename" value="${node.name}" onchange="rnFolder('${node.id}',this.value)">
+      <div class="factions">
+        <button class="btn btn-xs" onclick="addSub('${node.id}')">+ Sub</button>
+        <button class="btn btn-xs btn-danger" onclick="rmFolder('${node.id}')">Remove</button>
+      </div>
+    </div>
+    ${ch?`<div class="fchildren">${ch}</div>`:''}
+  </div>`;
+}
+function findN(tree,id){for(const n of tree){if(n.id===id)return n;const f=findN(n.children||[],id);if(f)return f;}return null;}
+function rmN(tree,id){for(let i=0;i<tree.length;i++){if(tree[i].id===id){tree.splice(i,1);return true;}if(rmN(tree[i].children||[],id))return true;}return false;}
+function rnFolder(id,v){const n=findN(folderTree,id);if(n)n.name=v;}
+function addSub(pid){const name=prompt('New subfolder name:');if(!name)return;const p=findN(folderTree,pid);if(p){p.children=p.children||[];p.children.push({id:'f_'+Date.now(),name,children:[]});}renderFolderTree();}
+function rmFolder(id){rmN(folderTree,id);renderFolderTree();}
+function addRootFolder(){const name=prompt('New root folder name:');if(!name)return;folderTree.push({id:'f_'+Date.now(),name,children:[]});renderFolderTree();}
+
+async function applyStructure(){
+  const res=document.getElementById('apply-result');
+  res.innerHTML='<div class="alert a-info">Creating folders in your Google Drive...</div>';
+  try{
+    async function mkFolder(name,pid){
+      const r=await fetch('https://www.googleapis.com/drive/v3/files',{
+        method:'POST',
+        headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},
+        body:JSON.stringify({name,mimeType:'application/vnd.google-apps.folder',parents:pid?[pid]:[]})
+      });
+      return(await r.json()).id;
+    }
+    async function mkTree(nodes,pid){for(const n of nodes){const id=await mkFolder(n.name,pid);if(n.children&&n.children.length)await mkTree(n.children,id);}}
+    await mkTree(folderTree,null);
+    res.innerHTML='<div class="alert a-success">Folder structure created in your Google Drive! Open Drive to see your new folders.</div>';
+  }catch(e){res.innerHTML='<div class="alert a-danger">Could not create folders: '+e.message+'</div>';}
+}
+
+function rescan(){
+  if(!confirm('Rescan your Drive? All 19 clients will be re-matched automatically.'))return;
+  allFiles=[];selectedFiles.clear();
+  document.getElementById('main-view').classList.add('hidden');
+  document.getElementById('scanning-view').classList.remove('hidden');
+  for(let i=0;i<6;i++){document.getElementById('dot-'+i).className='step-dot dot-pending';document.getElementById('step-'+i).style.color='#888';}
+  doScan().catch(e=>{document.getElementById('scanning-view').classList.add('hidden');document.getElementById('main-view').classList.remove('hidden');alert('Rescan failed: '+e.message);});
+}
+
+function showTab(tab,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>{s.classList.remove('active');s.classList.add('hidden');});
+  el.classList.add('active');
+  document.getElementById('tab-'+tab).classList.remove('hidden');
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+</script>
+</body>
+</html>
