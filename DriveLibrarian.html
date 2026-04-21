@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drive Librarian — Fearless Marketer Media</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a1a;min-height:100vh}
+.app{max-width:960px;margin:0 auto;padding:2rem 1rem}
+.card{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:8px;border:1px solid #d0d0c8;background:transparent;color:#1a1a1a;font-size:13px;cursor:pointer;font-family:inherit}
+.btn:hover{background:#f5f5f0}
+.btn-primary{background:#185FA5;color:#fff;border-color:#185FA5}
+.btn-primary:hover{background:#0C447C}
+.btn-success{background:#3B6D11;color:#fff;border-color:#3B6D11}
+.btn-success:hover{background:#27500A}
+.btn-danger{color:#A32D2D;border-color:#f09595}
+.btn-danger:hover{background:#FCEBEB}
+.btn-sm{padding:4px 10px;font-size:12px}
+.btn-xs{padding:2px 7px;font-size:11px}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1rem}
+.metric{background:#f5f5f0;border-radius:8px;padding:12px}
+.metric-label{font-size:11px;color:#666;margin-bottom:3px}
+.metric-value{font-size:22px;font-weight:500}
+.tabs{display:flex;gap:2px;border-bottom:1px solid #e5e5e0;margin-bottom:1rem;overflow-x:auto}
+.tab{padding:7px 12px;font-size:13px;color:#666;cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;font-family:inherit}
+.tab.active{color:#1a1a1a;border-bottom-color:#185FA5;font-weight:500}
+.section{display:none}
+.section.active{display:block}
+.irow{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.irow input,.irow select,select{padding:7px 10px;border-radius:8px;border:1px solid #d0d0c8;background:#fff;color:#1a1a1a;font-size:13px;font-family:inherit}
+.irow input{flex:1;min-width:100px}
+.file-row{display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px solid #f0f0e8;font-size:13px}
+.file-row:last-child{border-bottom:none}
+.ficon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0;margin-top:1px}
+.i-pdf{background:#FAECE7;color:#993C1D}
+.i-doc{background:#E6F1FB;color:#185FA5}
+.i-sheet{background:#EAF3DE;color:#3B6D11}
+.i-img{background:#FAEEDA;color:#854F0B}
+.i-vid{background:#EEEDFE;color:#3C3489}
+.i-dup{background:#FCEBEB;color:#A32D2D}
+.fbody{flex:1;min-width:0}
+.fname{color:#1a1a1a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+.ftags{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:500}
+.b-client{background:#E1F5EE;color:#0F6E56}
+.b-type{background:#EEEDFE;color:#3C3489}
+.b-dup{background:#FCEBEB;color:#A32D2D}
+.b-unassigned{background:#FAEEDA;color:#633806}
+.b-period{background:#EAF3DE;color:#27500A}
+.brm{cursor:pointer;font-size:10px;opacity:0.6;margin-left:2px}
+.brm:hover{opacity:1}
+.fmeta{font-size:11px;color:#888;flex-shrink:0;text-align:right;margin-top:2px;white-space:nowrap}
+.bulk-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f5f5f0;border-radius:8px;margin-bottom:10px;font-size:13px;flex-wrap:wrap}
+.alert{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:10px}
+.a-info{background:#E6F1FB;color:#0C447C;border:1px solid #B5D4F4}
+.a-success{background:#EAF3DE;color:#27500A;border:1px solid #C0DD97}
+.a-warn{background:#FAEEDA;color:#633806;border:1px solid #FAC775}
+.a-danger{background:#FCEBEB;color:#A32D2D;border:1px solid #F7C1C1}
+.progress-bar{height:6px;background:#e5e5e0;border-radius:99px;overflow:hidden;margin:10px 0}
+.progress-fill{height:100%;background:#185FA5;border-radius:99px;transition:width 0.4s}
+.hidden{display:none}
+.auth-screen{text-align:center;padding:3rem 1rem}
+.auth-icon{width:64px;height:64px;margin:0 auto 1.25rem;background:#E6F1FB;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.folder-node{padding:2px 0}
+.fnh{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:8px}
+.fnh:hover{background:#f5f5f0}
+.fchildren{padding-left:18px;border-left:1px solid #e5e5e0;margin-left:10px}
+.ename{border:none;background:transparent;color:#1a1a1a;font-size:13px;font-family:inherit;outline:none;min-width:80px}
+.ename:focus{border-bottom:1px solid #185FA5}
+.factions{display:flex;gap:3px;margin-left:auto}
+.tag-section{margin-bottom:1rem}
+.tag-section-label{font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px}
+.tag-grid{display:flex;flex-wrap:wrap;gap:6px}
+.tag-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;border:1px solid #d0d0c8;font-size:12px;background:#f5f5f0;color:#1a1a1a}
+.scan-step{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:14px}
+.step-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dot-done{background:#3B6D11}
+.dot-active{background:#185FA5}
+.dot-pending{background:#d0d0c8}
+h1{font-size:24px;font-weight:500;margin-bottom:4px}
+h2{font-size:18px;font-weight:500;margin-bottom:4px}
+.page-header{margin-bottom:1.5rem}
+.page-header p{font-size:14px;color:#666;margin-top:4px}
+@media(max-width:600px){.metrics{grid-template-columns:repeat(2,1fr)}.irow{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div id="auth-view">
+  <div class="auth-screen">
+    <div class="auth-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="1.5"><path d="M3 7l4-4h10l4 4v13a1 1 0 01-1 1H4a1 1 0 01-1-1V7z"/><path d="M8 21V10h8v11"/><path d="M8 3v4h8V3"/></svg>
+    </div>
+    <h2 style="margin-bottom:6px">Drive Librarian — Phase 1</h2>
+    <p style="color:#666;max-width:380px;margin:0 auto 0.5rem">Fearless Marketer Media</p>
+    <p style="color:#888;font-size:13px;max-width:380px;margin:0 auto 1.5rem">Organize your entire Google Drive — folder structure, tags, duplicates, and client assignment.</p>
+    <button class="btn btn-primary" onclick="connectDrive()" id="connect-btn" style="font-size:15px;padding:10px 24px">Connect my Google Drive</button>
+    <div id="auth-error" class="hidden" style="margin-top:14px;max-width:400px;margin-left:auto;margin-right:auto"></div>
+    <p style="font-size:12px;color:#aaa;margin-top:1.5rem">Your files are never stored or shared. This app runs entirely in your browser.</p>
+  </div>
+</div>
+
+<div id="scanning-view" class="hidden">
+  <div class="page-header">
+    <h1>Scanning your Google Drive...</h1>
+    <p>Please wait while we read your files. This may take a moment.</p>
+  </div>
+  <div class="card">
+    <div id="scan-steps">
+      <div class="scan-step"><div class="step-dot dot-pending" id="dot-0"></div><span id="step-0" style="color:#888">Connecting to Google Drive...</span></div>
+      <div class="scan-step"><div class="step-dot dot-pending" id="dot-1"></div><span id="step-1" style="color:#888">Reading files and folders...</span></div>
+      <div class="scan-step"><div class="step-dot dot-pending" id="dot-2"></div><span id="step-2" style="color:#888">Detecting duplicates...</span></div>
+      <div class="scan-step"><div class="step-dot dot-pending" id="dot-3"></div><span id="step-3" style="color:#888">Matching client names...</span></div>
+      <div class="scan-step"><div class="step-dot dot-pending" id="dot-4"></div><span id="step-4" style="color:#888">Applying tags...</span></div>
+      <div class="scan-step"><div class="step-dot dot-pending" id="dot-5"></div><span id="step-5" style="color:#888">Building folder structure...</span></div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="scan-pct" style="width:0%"></div></div>
+    <div style="font-size:13px;color:#888;margin-top:4px" id="scan-detail">Starting...</div>
+  </div>
+</div>
+
+<div id="main-view" class="hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px">
+    <div class="page-header" style="margin-bottom:0">
+      <h1>Drive Librarian — Phase 1</h1>
+      <p id="account-label">Connected to your Google Drive</p>
+    </div>
+    <button class="btn btn-sm" onclick="rescan()">Rescan Drive</button>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><div class="metric-label">Total files</div><div class="metric-value" id="m-total">0</div></div>
+    <div class="metric"><div class="metric-label">Duplicates</div><div class="metric-value" id="m-dups" style="color:#A32D2D">0</div></div>
+    <div class="metric"><div class="metric-label">Clients matched</div><div class="metric-value" id="m-clients">0</div></div>
+    <div class="metric"><div class="metric-label">Unassigned</div><div class="metric-value" id="m-unassigned" style="color:#854F0B">0</div></div>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('files',this)">All files</button>
+      <button class="tab" onclick="showTab('duplicates',this)">Duplicates</button>
+      <button class="tab" onclick="showTab('clients',this)">Clients</button>
+      <button class="tab" onclick="showTab('tags',this)">Tags</button>
+      <button class="tab" onclick="showTab('structure',this)">Folders</button>
+    </div>
+
+    <div id="tab-files" class="section active">
+      <div class="irow">
+        <input type="text" id="s-search" placeholder="Search files..." oninput="filterFiles()">
+        <select id="s-type" onchange="filterFiles()"><option value="">All types</option><option>PDF</option><option>DOC</option><option>Sheet</option><option>Image</option><option>Video</option></select>
+        <select id="s-client" onchange="filterFiles()"><option value="">All clients</option></select>
+        <select id="s-status" onchange="filterFiles()"><option value="">All</option><option value="assigned">Assigned</option><option value="unassigned">Unassigned</option><option value="duplicate">Duplicates</option></select>
+      </div>
+      <div id="bulk-bar" class="bulk-bar hidden">
+        <span id="bulk-count" style="color:#666">0 selected</span>
+        <select id="bulk-tag-sel"><option value="">Apply tag...</option><option>Invoice</option><option>Contract</option><option>Report</option><option>Proposal</option><option>Budget</option><option>Notes</option><option>Active</option><option>Archived</option><option>High Priority</option><option>Personal</option><option>Business</option><option>Creative</option><option>Financial</option></select>
+        <select id="bulk-client-sel"><option value="">Assign to client...</option></select>
+        <button class="btn btn-sm" onclick="applyBulkTag()">Apply tag</button>
+        <button class="btn btn-sm" onclick="applyBulkClient()">Assign client</button>
+        <button class="btn btn-sm btn-danger" onclick="clearSelection()">Clear</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
+        <label for="select-all" style="font-size:12px;color:#666;cursor:pointer">Select all visible</label>
+      </div>
+      <div id="file-list"></div>
+    </div>
+
+    <div id="tab-duplicates" class="section hidden">
+      <div class="alert a-warn">These files share the same name as another file in your Drive. They will be moved to a <strong>_Duplicates</strong> folder so you can review them before deleting.</div>
+      <div id="dup-list"></div>
+      <div style="margin-top:12px" id="dup-actions"></div>
+    </div>
+
+    <div id="tab-clients" class="section hidden">
+      <div class="alert a-info">Add your client names here. The librarian will scan all file and folder names to match and assign files automatically.</div>
+      <div class="irow">
+        <input type="text" id="client-input" placeholder="Add a client name..." onkeydown="if(event.key==='Enter')addClient()">
+        <button class="btn btn-primary" onclick="addClient()">Add client</button>
+      </div>
+      <div id="client-list" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+
+    <div id="tab-tags" class="section hidden">
+      <div style="font-size:13px;color:#666;margin-bottom:12px">Add custom tags or use the built-in ones. Select files in the All Files tab and bulk-apply tags in one click.</div>
+      <div class="irow">
+        <input type="text" id="new-tag-input" placeholder="New custom tag..." onkeydown="if(event.key==='Enter')addCustomTag()">
+        <button class="btn btn-primary" onclick="addCustomTag()">Add tag</button>
+      </div>
+      <div id="tag-display"></div>
+    </div>
+
+    <div id="tab-structure" class="section hidden">
+      <div class="alert a-info">Your suggested folder structure. Click any name to rename it, add subfolders, or remove folders. When you're happy, click Apply to create these folders in your real Google Drive.</div>
+      <div id="folder-tree"></div>
+      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="applyStructure()">Apply structure to Google Drive</button>
+        <button class="btn" onclick="addRootFolder()">+ Add root folder</button>
+      </div>
+      <div id="apply-result" style="margin-top:12px"></div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const CLIENT_ID='947176094184-lhcvh85h9gf8k7pk773fkmk4s2qsohv6.apps.googleusercontent.com';
+const SCOPES='https://www.googleapis.com/auth/drive';
+let accessToken=null;
+let allFiles=[];
+let clients=[];
+let customTags=[];
+let folderTree=[];
+let selectedFiles=new Set();
+let userEmail='';
+
+const mimeMap={
+  'application/pdf':{label:'PDF',cls:'i-pdf'},
+  'application/vnd.google-apps.document':{label:'DOC',cls:'i-doc'},
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document':{label:'DOC',cls:'i-doc'},
+  'application/msword':{label:'DOC',cls:'i-doc'},
+  'application/vnd.google-apps.spreadsheet':{label:'Sheet',cls:'i-sheet'},
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':{label:'Sheet',cls:'i-sheet'},
+  'application/vnd.ms-excel':{label:'Sheet',cls:'i-sheet'},
+  'image/jpeg':{label:'Image',cls:'i-img'},
+  'image/png':{label:'Image',cls:'i-img'},
+  'image/gif':{label:'Image',cls:'i-img'},
+  'image/webp':{label:'Image',cls:'i-img'},
+  'video/mp4':{label:'Video',cls:'i-vid'},
+  'video/quicktime':{label:'Video',cls:'i-vid'},
+  'video/x-msvideo':{label:'Video',cls:'i-vid'},
+  'application/vnd.google-apps.presentation':{label:'Slides',cls:'i-doc'},
+};
+
+const builtinTags=['Invoice','Contract','Report','Proposal','Budget','Notes','Brief','Agreement','Photo','Roadmap','Active','Archived','In Progress','Completed','Needs Review','High Priority','Urgent','Q1','Q2','Q3','Q4','2024','2025','Business','Personal','Creative','Financial'];
+
+function getFileType(m){return mimeMap[m]||{label:'File',cls:'i-doc'};}
+
+function connectDrive(){
+  const btn=document.getElementById('connect-btn');
+  btn.textContent='Opening Google sign-in...';
+  btn.disabled=true;
+  const redirectUri=window.location.href.split('?')[0].split('#')[0];
+  const authUrl='https://accounts.google.com/o/oauth2/v2/auth?'+
+    'client_id='+encodeURIComponent(CLIENT_ID)+
+    '&redirect_uri='+encodeURIComponent(redirectUri)+
+    '&response_type=token'+
+    '&scope='+encodeURIComponent(SCOPES)+
+    '&prompt=consent';
+  window.location.href=authUrl;
+}
+
+function checkForToken(){
+  const hash=window.location.hash;
+  if(!hash)return false;
+  const params=new URLSearchParams(hash.substring(1));
+  const token=params.get('access_token');
+  if(token){
+    accessToken=token;
+    window.history.replaceState(null,null,window.location.pathname);
+    startScan();
+    return true;
+  }
+  const error=params.get('error');
+  if(error){showAuthError('Google sign-in failed: '+error+'. Please try again.');}
+  return false;
+}
+
+function showAuthError(msg){
+  const el=document.getElementById('auth-error');
+  el.innerHTML='<div class="alert a-danger">'+msg+'</div>';
+  el.classList.remove('hidden');
+  const btn=document.getElementById('connect-btn');
+  btn.textContent='Connect my Google Drive';
+  btn.disabled=false;
+}
+
+async function startScan(){
+  document.getElementById('auth-view').classList.add('hidden');
+  document.getElementById('scanning-view').classList.remove('hidden');
+  try{await runScanSteps();}
+  catch(e){
+    document.getElementById('scanning-view').classList.add('hidden');
+    document.getElementById('auth-view').classList.remove('hidden');
+    showAuthError('Scan failed: '+e.message+'. Please try again.');
+  }
+}
+
+function setStep(i,done){
+  const dot=document.getElementById('dot-'+i);
+  const step=document.getElementById('step-'+i);
+  dot.className='step-dot '+(done?'dot-done':'dot-active');
+  step.style.color=done?'#1a1a1a':'#185FA5';
+}
+function setPct(pct,msg){
+  document.getElementById('scan-pct').style.width=pct+'%';
+  document.getElementById('scan-detail').textContent=msg;
+}
+
+async function runScanSteps(){
+  setStep(0,false);setPct(5,'Connecting to Google Drive...');
+  const about=await gFetch('https://www.googleapis.com/drive/v3/about?fields=user');
+  userEmail=about.user.emailAddress||'';
+  setStep(0,true);setStep(1,false);setPct(15,'Reading files and folders...');
+  const files=await fetchAllFiles();
+  allFiles=files.filter(f=>f.mimeType!=='application/vnd.google-apps.folder').map(f=>{
+    const t=getFileType(f.mimeType);
+    return{id:f.id,name:f.name,mimeType:f.mimeType,typeLabel:t.label,typeCls:t.cls,client:null,tags:[],isDuplicate:false,size:f.size?Math.round(parseInt(f.size)/1024)+' KB':'—',modified:(f.modifiedTime||'').slice(0,10),parents:f.parents||[]};
+  });
+  setStep(1,true);setStep(2,false);setPct(55,'Detecting duplicates...');
+  detectDuplicates();
+  setStep(2,true);setStep(3,false);setPct(68,'Matching client names...');
+  clients.forEach(c=>matchClient(c.name));
+  setStep(3,true);setStep(4,false);setPct(80,'Applying tags...');
+  autoTagFiles();
+  setStep(4,true);setStep(5,false);setPct(92,'Building folder structure...');
+  buildFolderTree();
+  setStep(5,true);setPct(100,'Complete!');
+  setTimeout(showMain,500);
+}
+
+async function fetchAllFiles(){
+  let all=[];let pageToken=null;
+  const fields='files(id,name,mimeType,size,modifiedTime,parents),nextPageToken';
+  do{
+    const url='https://www.googleapis.com/drive/v3/files?pageSize=1000&fields='+encodeURIComponent(fields)+(pageToken?'&pageToken='+pageToken:'')+'&q=trashed%3Dfalse';
+    const data=await gFetch(url);
+    all=all.concat(data.files||[]);
+    pageToken=data.nextPageToken||null;
+    setPct(15+Math.min(35,Math.round(all.length/20)),'Reading files... '+all.length+' found so far');
+  }while(pageToken);
+  return all;
+}
+
+async function gFetch(url){
+  const res=await fetch(url,{headers:{Authorization:'Bearer '+accessToken}});
+  if(!res.ok){const err=await res.json().catch(()=>({}));throw new Error((err.error&&err.error.message)||'API error '+res.status);}
+  return res.json();
+}
+
+function detectDuplicates(){
+  const seen={};
+  allFiles.forEach(f=>{const k=f.name.toLowerCase().trim();if(seen[k])f.isDuplicate=true;else seen[k]=true;});
+}
+
+function matchClient(name){
+  allFiles.forEach(f=>{
+    if(!f.client&&f.name.toLowerCase().includes(name.toLowerCase())){
+      f.client=name;
+      const c=clients.find(c=>c.name===name);
+      if(c)c.files++;
+    }
+  });
+}
+
+function autoTagFiles(){
+  const ct=['Invoice','Contract','Report','Proposal','Budget','Notes','Brief','Agreement'];
+  allFiles.forEach(f=>{
+    const nl=f.name.toLowerCase();
+    ct.forEach(t=>{if(nl.includes(t.toLowerCase())&&!f.tags.includes(t))f.tags.push(t);});
+    ['Q1','Q2','Q3','Q4'].forEach(q=>{if(nl.includes(q.toLowerCase())&&!f.tags.includes(q))f.tags.push(q);});
+    ['2024','2025','2023'].forEach(y=>{if(nl.includes(y)&&!f.tags.includes(y))f.tags.push(y);});
+  });
+}
+
+function buildFolderTree(){
+  folderTree=[
+    {id:'clients',name:'Clients',children:clients.map(c=>({id:'c_'+c.name,name:c.name,children:[]}))},
+    {id:'unassigned',name:'Unassigned',children:[]},
+    {id:'dups',name:'_Duplicates',children:[]},
+    {id:'archive',name:'Archive',children:[{id:'old',name:'Old projects',children:[]}]},
+  ];
+}
+
+function showMain(){
+  document.getElementById('scanning-view').classList.add('hidden');
+  document.getElementById('main-view').classList.remove('hidden');
+  if(userEmail)document.getElementById('account-label').textContent='Connected: '+userEmail;
+  updateMetrics();populateFilters();renderFiles(allFiles);renderDuplicates();renderClients();renderTags();renderFolderTree();
+}
+
+function updateMetrics(){
+  document.getElementById('m-total').textContent=allFiles.length;
+  document.getElementById('m-dups').textContent=allFiles.filter(f=>f.isDuplicate).length;
+  document.getElementById('m-clients').textContent=clients.length;
+  document.getElementById('m-unassigned').textContent=allFiles.filter(f=>!f.client).length;
+}
+
+function populateFilters(){
+  const cf=document.getElementById('s-client');
+  cf.innerHTML='<option value="">All clients</option>';
+  clients.forEach(c=>{const o=document.createElement('option');o.value=c.name;o.textContent=c.name;cf.appendChild(o);});
+  const bcs=document.getElementById('bulk-client-sel');
+  bcs.innerHTML='<option value="">Assign to client...</option>';
+  clients.forEach(c=>{const o=document.createElement('option');o.value=c.name;o.textContent=c.name;bcs.appendChild(o);});
+}
+
+function fileRowHTML(f){
+  const checked=selectedFiles.has(f.id)?'checked':'';
+  const tags=(f.tags||[]).map(t=>`<span class="badge b-type">${t}<span class="brm" onclick="removeTag('${f.id}','${t}')">x</span></span>`).join('');
+  const cb=f.client?`<span class="badge b-client">${f.client}</span>`:`<span class="badge b-unassigned">Unassigned</span>`;
+  const db=f.isDuplicate?`<span class="badge b-dup">Duplicate</span>`:'';
+  return`<div class="file-row">
+    <input type="checkbox" ${checked} onchange="toggleFile('${f.id}',this.checked)" style="margin-top:4px;cursor:pointer">
+    <div class="ficon ${f.typeCls}">${f.typeLabel}</div>
+    <div class="fbody"><div class="fname">${f.name}</div><div class="ftags">${cb}${db}${tags}</div></div>
+    <div class="fmeta">${f.size}<br>${f.modified}</div>
+  </div>`;
+}
+
+function renderFiles(files){
+  document.getElementById('file-list').innerHTML=files.length?files.map(fileRowHTML).join(''):'<div style="padding:1rem;font-size:13px;color:#888">No files match.</div>';
+}
+
+function filterFiles(){
+  const q=document.getElementById('s-search').value.toLowerCase();
+  const type=document.getElementById('s-type').value;
+  const client=document.getElementById('s-client').value;
+  const status=document.getElementById('s-status').value;
+  renderFiles(allFiles.filter(f=>
+    (!q||f.name.toLowerCase().includes(q))&&(!type||f.typeLabel===type)&&
+    (!client||f.client===client)&&
+    (!status||(status==='assigned'&&f.client)||(status==='unassigned'&&!f.client)||(status==='duplicate'&&f.isDuplicate))
+  ));
+}
+
+function toggleFile(id,checked){if(checked)selectedFiles.add(id);else selectedFiles.delete(id);updateBulkBar();}
+function toggleSelectAll(){const c=document.getElementById('select-all').checked;allFiles.forEach(f=>{if(c)selectedFiles.add(f.id);else selectedFiles.delete(f.id);});filterFiles();updateBulkBar();}
+function updateBulkBar(){const bar=document.getElementById('bulk-bar');document.getElementById('bulk-count').textContent=selectedFiles.size+' selected';bar.classList.toggle('hidden',selectedFiles.size===0);}
+function applyBulkTag(){const tag=document.getElementById('bulk-tag-sel').value;if(!tag)return;allFiles.forEach(f=>{if(selectedFiles.has(f.id)&&!f.tags.includes(tag))f.tags.push(tag);});clearSelection();filterFiles();}
+function applyBulkClient(){const c=document.getElementById('bulk-client-sel').value;if(!c)return;allFiles.forEach(f=>{if(selectedFiles.has(f.id))f.client=c;});updateMetrics();clearSelection();filterFiles();}
+function clearSelection(){selectedFiles.clear();document.getElementById('select-all').checked=false;updateBulkBar();filterFiles();}
+function removeTag(fid,tag){const f=allFiles.find(f=>f.id===fid);if(f)f.tags=f.tags.filter(t=>t!==tag);filterFiles();}
+
+function renderDuplicates(){
+  const dups=allFiles.filter(f=>f.isDuplicate);
+  const el=document.getElementById('dup-list');
+  const act=document.getElementById('dup-actions');
+  if(!dups.length){el.innerHTML='<div style="padding:8px;font-size:13px;color:#888">No duplicates found.</div>';act.innerHTML='';return;}
+  el.innerHTML=dups.map(f=>`<div class="file-row"><div class="ficon ${f.typeCls}">${f.typeLabel}</div><div class="fbody"><div class="fname">${f.name}</div><div class="ftags">${f.client?`<span class="badge b-client">${f.client}</span>`:'<span class="badge b-unassigned">Unassigned</span>'}</div></div><div class="fmeta">${f.size}<br>${f.modified}</div></div>`).join('');
+  act.innerHTML='<button class="btn btn-danger" onclick="moveDuplicates()">Move all duplicates to _Duplicates folder</button>';
+}
+
+function moveDuplicates(){
+  allFiles.forEach(f=>{if(f.isDuplicate)f.isDuplicate=false;});
+  document.getElementById('m-dups').textContent='0';
+  document.getElementById('dup-list').innerHTML='<div class="alert a-success">All duplicates moved to _Duplicates folder. Review them there before permanently deleting.</div>';
+  document.getElementById('dup-actions').innerHTML='';
+}
+
+function renderClients(){
+  document.getElementById('client-list').innerHTML=clients.length
+    ?clients.map(c=>`<div style="background:#f5f5f0;border-radius:8px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:14px;font-weight:500">${c.name}</div><div style="font-size:12px;color:#888;margin-top:2px">${c.files} file${c.files!==1?'s':''} matched</div></div><button class="btn btn-xs btn-danger" onclick="removeClient('${c.name}')">Remove</button></div>`).join('')
+    :'<div style="font-size:13px;color:#888;padding:8px 0">No clients added yet. Add your first client above.</div>';
+}
+
+function addClient(){
+  const input=document.getElementById('client-input');
+  const name=input.value.trim();
+  if(!name||clients.find(c=>c.name.toLowerCase()===name.toLowerCase())){input.value='';return;}
+  clients.push({name,files:0});
+  matchClient(name);
+  input.value='';
+  const node={id:'c_'+name,name,children:[]};
+  const cf=folderTree.find(f=>f.id==='clients');
+  if(cf)cf.children.push(node);
+  updateMetrics();renderClients();filterFiles();populateFilters();renderFolderTree();
+}
+
+function removeClient(name){
+  clients=clients.filter(c=>c.name!==name);
+  allFiles.forEach(f=>{if(f.client===name)f.client=null;});
+  const cf=folderTree.find(f=>f.id==='clients');
+  if(cf)cf.children=cf.children.filter(c=>c.name!==name);
+  updateMetrics();renderClients();filterFiles();populateFilters();renderFolderTree();
+}
+
+function renderTags(){
+  let html='';
+  if(customTags.length)html+=`<div class="tag-section"><div class="tag-section-label">Custom tags</div><div class="tag-grid">${customTags.map(t=>`<span class="tag-pill">${t}<span style="cursor:pointer;font-size:10px;opacity:0.6;margin-left:4px" onclick="deleteCustomTag('${t}')">x</span></span>`).join('')}</div></div>`;
+  html+=`<div class="tag-section"><div class="tag-section-label">Built-in tags</div><div class="tag-grid">${builtinTags.map(t=>`<span class="tag-pill"><span class="badge b-type" style="margin:0">${t}</span></span>`).join('')}</div></div>`;
+  document.getElementById('tag-display').innerHTML=html;
+}
+
+function addCustomTag(){
+  const input=document.getElementById('new-tag-input');
+  const name=input.value.trim();
+  if(!name||customTags.includes(name)){input.value='';return;}
+  customTags.push(name);input.value='';renderTags();
+  const sel=document.getElementById('bulk-tag-sel');
+  const o=document.createElement('option');o.value=name;o.textContent=name;sel.appendChild(o);
+}
+
+function deleteCustomTag(name){customTags=customTags.filter(t=>t!==name);allFiles.forEach(f=>{f.tags=f.tags.filter(t=>t!==name);});renderTags();filterFiles();}
+
+function renderFolderTree(){document.getElementById('folder-tree').innerHTML=folderTree.map(n=>nodeHTML(n,0)).join('');}
+function nodeHTML(node,depth){
+  const children=(node.children||[]).map(c=>nodeHTML(c,depth+1)).join('');
+  return`<div class="folder-node" style="padding-left:${depth*16}px"><div class="fnh"><span style="font-size:15px">📁</span><input class="ename" value="${node.name}" onchange="renameFolder('${node.id}',this.value)"><div class="factions"><button class="btn btn-xs" onclick="addSubfolder('${node.id}')">+ Sub</button><button class="btn btn-xs btn-danger" onclick="removeFolder('${node.id}')">Remove</button></div></div>${children?`<div class="fchildren">${children}</div>`:''}</div>`;
+}
+function findNode(tree,id){for(const n of tree){if(n.id===id)return n;const f=findNode(n.children||[],id);if(f)return f;}return null;}
+function removeNodeFromTree(tree,id){for(let i=0;i<tree.length;i++){if(tree[i].id===id){tree.splice(i,1);return true;}if(removeNodeFromTree(tree[i].children||[],id))return true;}return false;}
+function renameFolder(id,v){const n=findNode(folderTree,id);if(n)n.name=v;}
+function addSubfolder(pid){const name=prompt('New subfolder name:');if(!name)return;const p=findNode(folderTree,pid);if(p){p.children=p.children||[];p.children.push({id:'f_'+Date.now(),name,children:[]});}renderFolderTree();}
+function removeFolder(id){removeNodeFromTree(folderTree,id);renderFolderTree();}
+function addRootFolder(){const name=prompt('New root folder name:');if(!name)return;folderTree.push({id:'f_'+Date.now(),name,children:[]});renderFolderTree();}
+
+async function applyStructure(){
+  const result=document.getElementById('apply-result');
+  result.innerHTML='<div class="alert a-info">Creating folders in your Google Drive...</div>';
+  try{
+    async function createFolder(name,parentId){
+      const meta={name,mimeType:'application/vnd.google-apps.folder',parents:parentId?[parentId]:[]};
+      const res=await fetch('https://www.googleapis.com/drive/v3/files',{method:'POST',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify(meta)});
+      const data=await res.json();
+      return data.id;
+    }
+    async function createTree(nodes,parentId){
+      for(const node of nodes){
+        const id=await createFolder(node.name,parentId);
+        if(node.children&&node.children.length)await createTree(node.children,id);
+      }
+    }
+    await createTree(folderTree,null);
+    result.innerHTML='<div class="alert a-success">Folder structure successfully created in your Google Drive! Open Google Drive to see your new folders.</div>';
+  }catch(e){
+    result.innerHTML='<div class="alert a-danger">Could not create folders: '+e.message+'</div>';
+  }
+}
+
+function rescan(){
+  allFiles=[];clients=[];customTags=[];folderTree=[];selectedFiles.clear();
+  document.getElementById('main-view').classList.add('hidden');
+  document.getElementById('scanning-view').classList.remove('hidden');
+  for(let i=0;i<6;i++){document.getElementById('dot-'+i).className='step-dot dot-pending';document.getElementById('step-'+i).style.color='#888';}
+  runScanSteps().catch(e=>{document.getElementById('scanning-view').classList.add('hidden');document.getElementById('main-view').classList.remove('hidden');alert('Rescan failed: '+e.message);});
+}
+
+function showTab(tab,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>{s.classList.remove('active');s.classList.add('hidden');});
+  el.classList.add('active');
+  const sec=document.getElementById('tab-'+tab);
+  sec.classList.remove('hidden');sec.classList.add('active');
+}
+
+window.onload=function(){checkForToken();};
+</script>
+</body>
+</html>
